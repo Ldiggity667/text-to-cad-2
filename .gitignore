@@ -53,6 +53,3 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
-
-# duplicate of tests/test_handlers.py (left in place, not tracked)
-core/inputs/test_handlers.py

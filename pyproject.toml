@@ -1,0 +1,33 @@
+[project]
+name = "text-to-cad"
+version = "1.0.0"
+description = "Generate 3D CAD geometry from text, images, or PDF drawings using a local LLM."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Sagar Shedage" }]
+keywords = ["cad", "build123d", "llm", "ollama", "step", "3d", "local-ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Manufacturing",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "build123d>=0.8.0",
+    "PySide6>=6.7.0",
+    "PyMuPDF>=1.24.0",
+    "Pillow>=10.3.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = ["ignore::DeprecationWarning"]

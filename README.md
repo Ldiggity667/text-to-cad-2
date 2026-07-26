@@ -1,10 +1,18 @@
 # text-to-cad
 
+[![CI](https://github.com/<your-username>/text-to-cad/actions/workflows/ci.yml/badge.svg)](https://github.com/<your-username>/text-to-cad/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Runs locally](https://img.shields.io/badge/inference-100%25%20local-purple.svg)](https://ollama.com)
+
 Generate real, manufacturable **3D CAD geometry from a text description, a photo, or a PDF drawing** — entirely on your own machine, using a local LLM.
 
 The app asks a local [Ollama](https://ollama.com) model to write a [build123d](https://github.com/gumyr/build123d) script, runs that script in an isolated subprocess, validates the resulting STEP file, and shows it in a 3D viewer. If the generated code crashes, the error is fed back to the model and it tries again.
 
 No cloud APIs. No API keys. Nothing leaves your computer.
+
+<!-- Replace these with real captures — see docs/screenshots/README.md -->
+![The main window: prompt on the left, generated STEP in the viewer on the right](docs/screenshots/main-window.png)
 
 ---
 

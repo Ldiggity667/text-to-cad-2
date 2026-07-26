@@ -1,34 +1,65 @@
-"""Standalone smoke test for the Forge3D UI widgets.
+"""Import smoke tests for the UI package.
 
-Run:  python test_ui_components.py
+Every UI module is imported headlessly. This is deliberately shallow — its job
+is to catch a syntax error, a bad import, or a module renamed without its
+callers being updated, none of which should ever reach a user.
 """
 
-import sys
-from pathlib import Path
+from __future__ import annotations
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+import importlib
+import os
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+import pytest
 
-from ui.widgets.log_console import LogConsole
-from ui.widgets.drop_zone import DropZone
+# Must be set before any Qt import so CI needs no display.
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-app = QApplication(sys.argv)
-window = QMainWindow()
-central = QWidget()
-layout = QVBoxLayout(central)
+pytest.importorskip("PySide6")
 
-console = LogConsole()
-console.append_log("info", "Application started")
-console.append_log("success", "Build123d loaded")
-console.append_log("warning", "Vision model not found")
-console.append_log("error", "Connection refused")
-layout.addWidget(console)
+UI_MODULES = [
+    "ui.app",
+    "ui.main_window",
+    "ui.dialogs.settings_dialog",
+    "ui.panels.history_panel",
+    "ui.panels.input_panel",
+    "ui.panels.preview_panel",
+    "ui.widgets.drop_zone",
+    "ui.widgets.log_console",
+    "ui.widgets.model_selector",
+]
 
-dropzone = DropZone([".step", ".stp"], "Drop STEP file here")
-layout.addWidget(dropzone)
+CORE_MODULES = [
+    "core",
+    "core.code_runner",
+    "core.ollama_client",
+    "core.pipeline",
+    "core.prompt_engineer",
+    "core.step_validator",
+    "core.inputs.image_handler",
+    "core.inputs.pdf_handler",
+    "core.inputs.text_handler",
+]
 
-window.setCentralWidget(central)
-window.resize(600, 400)
-window.show()
-sys.exit(app.exec())
+
+@pytest.mark.parametrize("module_name", UI_MODULES)
+def test_ui_module_imports(module_name):
+    assert importlib.import_module(module_name) is not None
+
+
+@pytest.mark.parametrize("module_name", CORE_MODULES)
+def test_core_module_imports(module_name):
+    assert importlib.import_module(module_name) is not None
+
+
+def test_app_exposes_create_app():
+    from ui.app import create_app
+
+    assert callable(create_app)
+
+
+def test_package_metadata_present():
+    import core
+
+    assert core.APP_NAME
+    assert core.APP_VERSION
