@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge3D Viewer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loading-text">Waiting for model...</div>
+</div>
+
+<div id="status-bar">
+  <span id="status-text">Ready</span>
+  <span id="file-info"></span>
+  <span id="triangle-count"></span>
+</div>
+
+<!-- Vendored locally for offline use (Three.js r137 + occt-import-js 0.0.23) -->
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/occt-import-js.js"></script>
+<script src="viewer.js"></script>
+</body>
+</html>
