@@ -1,6 +1,6 @@
 # text-to-cad
 
-[![CI](https://github.com/<your-username>/text-to-cad/actions/workflows/ci.yml/badge.svg)](https://github.com/<your-username>/text-to-cad/actions/workflows/ci.yml)
+[![CI](https://github.com/sagarshedage7/text-to-cad/actions/workflows/ci.yml/badge.svg)](https://github.com/sagarshedage7/text-to-cad/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Runs locally](https://img.shields.io/badge/inference-100%25%20local-purple.svg)](https://ollama.com)
@@ -91,7 +91,7 @@ That last one and the two-stage vision split were both the result of watching sm
 ## Setup
 
 ```bash
-git clone https://github.com/<your-username>/text-to-cad.git
+git clone https://github.com/sagarshedage7/text-to-cad.git
 cd text-to-cad
 
 python -m venv .venv
