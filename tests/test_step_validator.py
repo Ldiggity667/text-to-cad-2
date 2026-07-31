@@ -47,18 +47,19 @@ def test_non_step_content_is_invalid(validator, tmp_path):
     assert "valid STEP" in message
 
 
-def test_header_is_recognised(validator, tmp_path):
-    """A well-formed but geometry-free file gets past the header check.
+def test_geometry_free_file_is_rejected(validator, tmp_path):
+    """A valid header with an empty DATA section must not count as a pass.
 
-    It should still fail overall, because build123d cannot re-import empty
-    geometry — the point is that it fails at the re-import stage, not the
-    header stage.
+    Regression: this file imports cleanly — build123d raises nothing and
+    returns a non-None object — so the validator reported success on a
+    STEP containing no part at all. That is precisely the "the script ran
+    and produced nothing" case the pipeline relies on this to catch.
     """
     path = tmp_path / "header_only.step"
     path.write_text(MINIMAL_STEP_HEADER, encoding="utf-8")
     ok, message = validator.validate(path)
     assert ok is False
-    assert "valid STEP file" not in message or "reimport" in message.lower()
+    assert "no solid geometry" in message
 
 
 def test_accepts_a_real_generated_step(validator, tmp_path):

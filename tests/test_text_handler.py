@@ -7,6 +7,12 @@ import pytest
 from core.inputs.text_handler import TextHandler
 
 
+# Assert on the whole appended phrase, not the bare word "millimetres" — a
+# prompt that legitimately says "250 millimetres wide" would otherwise look
+# like the hint had been added when it had not.
+HINT = "(use millimetres for all dimensions)"
+
+
 @pytest.fixture
 def handler() -> TextHandler:
     return TextHandler()
@@ -50,7 +56,7 @@ def test_too_long_rejected(handler):
 
 def test_unit_hint_appended_when_units_absent(handler):
     result = handler.prepare("A plate 100 by 50 by 5 with a hole in the centre")
-    assert "millimetres" in result["prompt"]
+    assert result["prompt"].endswith(HINT)
 
 
 @pytest.mark.parametrize(
@@ -60,16 +66,32 @@ def test_unit_hint_appended_when_units_absent(handler):
         "A plate 100 cm by 50 cm by 5 cm thick",
         "A plate 4 inches by 2 inches by 1 inch thick",
         'A plate 4" by 2" by 1" thick overall',
+        "A spacer 40 mm long and 30 mm outer diameter",
+        "A bracket 250 millimetres wide with two slots",
+        "A shaft 5 m long for a conveyor frame",
+        "A plate 12 in wide and 6 in tall overall",
     ],
 )
 def test_unit_hint_not_appended_when_units_present(handler, text):
-    assert "millimetres for all dimensions" not in handler.prepare(text)["prompt"]
+    assert not handler.prepare(text)["prompt"].endswith(HINT)
 
 
-def test_unit_detection_does_not_fire_on_ordinary_words(handler):
-    """The 'm' unit must not match inside a word like 'mounting'."""
-    result = handler.prepare("A mounting bracket with some holes in it")
-    assert "millimetres" in result["prompt"]
+@pytest.mark.parametrize(
+    "text",
+    [
+        "A mounting bracket with some holes in it",   # 'm' inside "mounting"
+        "A flange with six bolt holes in a circle",   # 'in' as a preposition
+        "A simple bracket with several holes in it",
+    ],
+)
+def test_unit_words_inside_ordinary_english_are_not_units(handler, text):
+    """'in' and 'm' must only count as units when a number precedes them.
+
+    Regression: "a hole in the centre" matched the inch unit, so a prompt
+    with no dimensions at all was treated as already carrying units and
+    never got the millimetre hint.
+    """
+    assert handler.prepare(text)["prompt"].endswith(HINT)
 
 
 def test_colour_words_are_stripped(handler):

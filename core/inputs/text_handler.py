@@ -9,14 +9,18 @@ from __future__ import annotations
 import re
 
 
-# Unit may be glued to a digit ("10mm") or stand alone ("10 cm"). Anchor the
-# left side to a digit, whitespace, or string start so we don't match the "m"
-# inside ordinary words.
+# Unit may be glued to a digit ("10mm") or stand alone ("10 cm").
+#
+# A unit only counts when a number comes before it. Allowing whitespace on
+# the left was too permissive: "in" then matched the preposition in "a hole
+# in the centre", so a prompt with no units at all looked like it had them
+# and never got the millimetre hint appended. Anchoring on a leading digit
+# is what distinguishes "100 in" from "hole in the centre".
 _UNIT_PATTERN = re.compile(
-    r'(?:(?<=\d)|(?<=\s)|^)'
-    r'(mm|millimet(?:re|er)s?|cm|centimet(?:re|er)s?|'
+    r'\d\s*'
+    r'(?:mm|millimet(?:re|er)s?|cm|centimet(?:re|er)s?|'
     r'inch(?:es)?|in|m|met(?:re|er)s?)\b'
-    r'|["″]',  # inch/double-prime marks
+    r'|\d\s*["″]',  # inch/double-prime marks, e.g. 4"
     re.IGNORECASE,
 )
 _NUMBER_PATTERN = re.compile(r"\d")
